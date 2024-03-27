@@ -2,6 +2,7 @@
 
 namespace app\entity;
 
+use app\repository\UsersRepository;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -17,23 +18,34 @@ class Users extends ActiveRecord implements IdentityInterface
 
     public static function findIdentity($id)
     {
-        // TODO: Implement findIdentity() method.
-    }
-
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
+        return new static(UsersRepository::getUserById($id));
     }
 
     public function getId()
     {
-        // TODO: Implement getId() method.
+        return $this->id;
     }
+
+    public function validatePassword($password)
+    {
+        return password_verify($password, $this->password);
+    }
+
+    public function findUserByLogin($login)
+    {
+        return new static(UsersRepository::getUserByLogin($login));
+    }
+
 
     public function getAuthKey()
     {
     }
 
     public function validateAuthKey($authKey)
+    {
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
     {
     }
 }
