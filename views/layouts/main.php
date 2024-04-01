@@ -4,6 +4,7 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
+use yii\helpers\Html;
 
 AppAsset::register($this);
 
@@ -28,8 +29,20 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         <nav>
             <ul>
                 <li><a href="#">Случайная тема</a></li>
-                <li><a href="/user/login">Войти</a></li>
-                <li><a href="/user/registration" class="btn">Регистрация</a></li>
+                <?php if (Yii::$app->user->isGuest): ?>
+                    <li><a href="/user/login">Войти</a></li>
+                    <li><a href="/user/registration" class="btn">Регистрация</a></li>
+                <?php else: ?>
+
+
+                    <?= "<li>" .
+                    Html::beginForm(["/user/logout"]) .
+                    Html::submitButton("Выход (" . Yii::$app->user->identity->login . ")", ["class" => "btn"]) .
+                    Html::endForm() . "</li>";
+                    ?>
+
+
+                <?php endif; ?>
             </ul>
         </nav>
     </div>
