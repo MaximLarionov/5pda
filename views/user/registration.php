@@ -17,10 +17,15 @@ use yii\widgets\ActiveForm;
                 "errorOptions" => ["class" => "error"]
             ]
         ]) ?>
-
-        <?= $form->field($model, "login")->textInput() ?>
-        <?= $form->field($model, "password")->passwordInput() ?>
-        <?= $form->field($model, "passwordRepeat")->passwordInput() ?>
+        <div>
+            <?= $form->field($model, "login")->textInput() ?>
+        </div>
+        <div>
+            <?= $form->field($model, "password")->passwordInput() ?>
+        </div>
+        <div>
+            <?= $form->field($model, "passwordRepeat")->passwordInput() ?>
+        </div>
         <?= Html::submitButton("Регистрация", ["class" => "btn"]) ?>
 
         <?php ActiveForm::end(); ?>
