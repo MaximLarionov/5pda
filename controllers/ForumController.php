@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\MessageForm;
 use app\models\SectionForm;
 use app\repository\ForumRepository;
 use yii\web\Controller;
@@ -55,9 +56,75 @@ class ForumController extends Controller
 
     public function actionSubsections()
     {
-        $this->view->title = "Страница подразделов";
+        $title = ForumRepository::getSectionsTitle(\Yii::$app->request->get("id"));
+
+        $this->view->title = $title;
         return $this->render("subsections", [
             "subsections" => ForumRepository::getSubsections(\Yii::$app->request->get("id")),
+        ]);
+    }
+
+
+    public function actionTopics()
+    {
+
+        $title = ForumRepository::getSubsectionsTitle(\Yii::$app->request->get("id"));
+
+        $this->view->title = $title;
+
+        $topics = ForumRepository::getTopics(\Yii::$app->request->get("id"));
+
+        return $this->render("topics", [
+            "topics" => $topics
+        ]);
+    }
+
+
+    public function actionCreateTopic()
+    {
+        $this->view->title = "Темы";
+
+        $model = new SectionForm();
+
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+            ForumRepository::createTopic(
+                $model->title,
+                $model->description,
+                \Yii::$app->request->get("id"),
+                \Yii::$app->user->id
+            );
+            return $this->goHome();
+        }
+
+        return $this->render("createTopic", [
+            "model" => $model
+        ]);
+    }
+
+
+    public function actionMessages()
+    {
+        $title = ForumRepository::getTopicsTitle(\Yii::$app->request->get("id"));
+
+        $this->view->title = $title;
+
+
+        $model = new MessageForm();
+
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+            ForumRepository::createMessage(
+                $model->text,
+                \Yii::$app->request->get("id"),
+                \Yii::$app->user->id,
+            );
+        }
+
+
+        $messages = ForumRepository::getMessages(\Yii::$app->request->get("id"));
+
+        return $this->render("messages", [
+            "messages" => $messages,
+            "model" => $model
         ]);
     }
 }
